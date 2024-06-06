@@ -73,9 +73,19 @@ def get_balance(exchange: ccxt.Exchange) -> dict:
     balance = {}
 
     if exchange.name == 'OKX':
-        balance['funding'] = exchange.fetch_balance(params={'type': 'funding'})
-        balance['spot'] = exchange.fetch_balance(params={'type': 'spot'})
+        try:
+            balance['funding'] = exchange.fetch_balance(params={'type': 'funding'})
+            balance['spot'] = exchange.fetch_balance(params={'type': 'spot'})
+        except ccxt.AuthenticationError as e:
+            print("Authentication Error:", e)
+        except Exception as e:
+            print("An error occurred:", e)
     elif exchange.name == 'Bybit':
-        balance['spot'] = exchange.fetch_balance(params={'type': 'spot'})
-        balance['FUND'] = exchange.fetch_balance(params={'type': 'FUND'})
+        try:
+            balance['spot'] = exchange.fetch_balance(params={'type': 'spot'})
+            balance['FUND'] = exchange.fetch_balance(params={'type': 'FUND'})
+        except ccxt.AuthenticationError as e:
+            print("Authentication Error:", e)
+        except Exception as e:
+            print("An error occurred:", e)
     return balance
