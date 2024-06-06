@@ -37,7 +37,7 @@ def get_binance_tokens() -> list:
         print("An error occurred:", e)
 
 
-def get_balance(apikey: str, secretkey: str, password: str, token: str) -> None:
+def get_balance_okx(apikey: str, secretkey: str, password: str, token: str) -> None:
     """
     Получение баланса с биржи OKX
     :param apikey: ваш api ключ
@@ -67,3 +67,15 @@ def get_balance(apikey: str, secretkey: str, password: str, token: str) -> None:
         print("Authentication Error:", e)
     except Exception as e:
         print("An error occurred:", e)
+
+
+def get_balance(exchange: ccxt.Exchange) -> dict:
+    balance = {}
+
+    if exchange.name == 'OKX':
+        balance['funding'] = exchange.fetch_balance(params={'type': 'funding'})
+        balance['spot'] = exchange.fetch_balance(params={'type': 'spot'})
+    elif exchange.name == 'Bybit':
+        balance['spot'] = exchange.fetch_balance(params={'type': 'spot'})
+        balance['FUND'] = exchange.fetch_balance(params={'type': 'FUND'})
+    return balance
