@@ -37,7 +37,7 @@ def get_binance_tokens() -> list:
         print("An error occurred:", e)
 
 
-def get_balance_okx(apikey: str, secretkey: str, password: str, token: str) -> None:
+def get_balance_okx(exchange: ccxt.Exchange, token: str) -> None:
     """
     Получение баланса с биржи OKX
     :param apikey: ваш api ключ
@@ -46,17 +46,8 @@ def get_balance_okx(apikey: str, secretkey: str, password: str, token: str) -> N
     :param token: токен для вывода баланса, 'all'-вывод всех балансов токенов
     :return: вывод баланса
     """
-    params = {
-        'type': 'funding'
-    }
-
-    okx = ccxt.okx({
-        'apiKey': apikey,
-        'secret': secretkey,
-        'password': password
-    })
     try:
-        balance = okx.fetch_balance(params=params)
+        balance = exchange.fetch_balance(params={'type': 'funding'})
         for key, value in balance['total'].items():
             if key.casefold() == token.casefold() and value > 0:
                 print(f'Ваш баланс {key}: {value}')
